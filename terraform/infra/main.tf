@@ -13,12 +13,25 @@ resource "aws_security_group" "securitygroup" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  egress {
-    from_port = 0
-    to_port = 65550
+  ingress {
+    from_port = 22
+    to_port = 22
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port = 0
+    to_port = 65535
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+}
+
+resource "aws_key_pair" "keypair" {
+  key_name = "terraform-keypair"
+  public_key = file("/home/daniel/.ssh/devOpsUece.pub")
   
 }
 
@@ -26,5 +39,6 @@ resource "aws_instance" "devOps_uece" {
   ami = "ami-04a81a99f5ec58529"
   instance_type = "t2.micro" 
   user_data = file("user_data.sh")
+  key_name = aws_key_pair.keypair.key_name
   vpc_security_group_ids = [aws_security_group.securitygroup.id]
 }
