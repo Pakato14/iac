@@ -1,9 +1,16 @@
 #!/bin/bash
 
 sudo su
-apt update -y
-apt install -y docker
-service docker start
-usermod -a -G docker ec2-user
+apt update -
+apt install -y java-1.8.0-openjdk
 
-docker run -p 80:8080 brunaofl/posgrad-api
+# Criar um diretório para o programa
+mkdir -p /opt/myapp
+
+apt install -y docker.io
+systemctl start docker
+systemctl enable docker
+
+docker pull brunaofl/posgrad-api:latest
+docker run -d --name posgrad-api -p 80:8080 brunaofl/posgrad-api:latest
+# docker run -p 80:8080 brunaofl/posgrad-api
